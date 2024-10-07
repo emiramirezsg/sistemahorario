@@ -29,6 +29,7 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::post('/logout', [Logincontroller::class, 'logout'])->name('logout');
 // Docentes Routes
 Route::resource('docentes', DocenteController::class);
+
 Route::get('/horarios', [DocenteController::class, 'horarios'])->name('docente.horarios');
 Route::get('/docentes', [DocenteController::class, 'index'])->name('docentes.index');
 Route::get('/docentes/create', [DocenteController::class, 'create'])->name('docentes.create');

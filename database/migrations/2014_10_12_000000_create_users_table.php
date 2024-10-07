@@ -113,11 +113,9 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('nombre');
             $table->integer('horas_semana')->default(0);
-            $table->foreignId('docente_id')->nullable()->constrained('docentes')->onDelete('cascade');
+            $table->foreignId('docente_id')->nullable()->constrained('docentes')->onDelete('cascade'); 
             $table->timestamps();
         });
-
-        
 
         Schema::create('cursos', function (Blueprint $table) {
             $table->id();

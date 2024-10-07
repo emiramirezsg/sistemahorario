@@ -139,11 +139,9 @@
                                 @if($materia->cursos->isEmpty())
                                     <span class="text-danger">Curso no asignado</span>
                                 @else
-                                    <ul>
                                         @foreach($materia->cursos as $curso)
-                                            <li>{{ $curso->nombre }}</li> 
+                                            {{ $curso->nombre }}
                                         @endforeach
-                                    </ul>
                                 @endif
                             </p>
                         </div>

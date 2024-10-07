@@ -84,9 +84,31 @@
 <body>
     <div class="form-container">
         <h2>Crear Docente</h2>
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+
         <form action="{{ route('docentes.store') }}" method="POST">
             @csrf
-            <!-- Campos para el usuario y el docente -->
             <div class="form-group">
                 <label for="nombre">Nombre</label>
                 <input type="text" id="nombre" name="nombre" >
@@ -115,12 +137,31 @@
                     @endforeach
                 </select>
             </div>
-            <!-- Nuevo campo para seleccionar la materia -->
-            
+            <div class="form-group">
+                <label for="materia_id">Materia:</label>
+                <select name="materia_id" id="materia_id" class="form-control" required onchange="updateCurso()">
+                    <option value="">Seleccione una materia</option>
+                    @foreach($materias as $materia)
+                        <option value="{{ $materia->id }}" data-cursos="{{ $materia->cursos->pluck('nombre')->join(', ') }}">{{ $materia->nombre }}</option>
+                    @endforeach
+                </select>
+            </div>
 
+            <div class="form-group">
+                <label for="curso">Curso:</label>
+                <input type="text" id="curso" class="form-control" readonly>
+            </div>
             <button type="submit" class="btn-submit">Guardar</button>
             <a href="{{ route('docentes.index') }}" class="btn-back">Cancelar</a>
         </form>
     </div>
+    <script>
+        function updateCurso() {
+            var select = document.getElementById('materia_id');
+            var cursoInput = document.getElementById('curso');
+            var selectedOption = select.options[select.selectedIndex];
+            cursoInput.value = selectedOption.getAttribute('data-cursos');
+        }
+    </script>
 </body>
 </html>

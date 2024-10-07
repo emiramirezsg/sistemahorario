@@ -127,16 +127,24 @@
                 <div class="docente-info">
                     <h3>{{ $docente->nombre }} {{ $docente->apellido }}</h3>
                     <p><strong>Email:</strong> {{ $docente->email }}</p>
-                    <p><strong>Categoría:</strong> {{ $docente->categoria->nombre }}</p>
-                    <p><strong>Materia:</strong> {{ $docente->materia->nombre }}</p>
-                    <p><strong>Dia libre:</strong></p>
+                    <p><strong>Categoría:</strong> {{ $docente->categoria ? $docente->categoria->nombre : 'Categoría no asignada' }}</p>
+                    <p><strong>Materia: </strong>
+                        @if($docente->materias->isEmpty())
+                            No tiene materias asignadas
+                        @else
+                                @foreach($docente->materias as $materia)
+                                    {{ $materia->nombre }}
+                                @endforeach
+                        @endif
+                    </p>
+                    
                 </div>
                 <div class="botones">
                     <a href="{{ route('docentes.edit', $docente->id) }}" class="btn btn-editar">Editar</a>
-                    <form action="{{ route('docentes.destroy', $docente->id) }}" method="POST" style="display: inline;">
+                    <form action="{{ route('docentes.destroy', $docente->id) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-eliminar" onclick="return confirm('¿Estás seguro de querer eliminar este docente?')">Eliminar</button>
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este docente?');">Eliminar</button>
                     </form>
                 </div>
             </div>

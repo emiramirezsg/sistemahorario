@@ -113,9 +113,32 @@
                     @endforeach
                 </select>
             </div>
+            <div class="form-group">
+                <label for="materia_id">Materia:</label>
+                <select name="materia_id" id="materia_id" class="form-control" required onchange="updateCurso()">
+                    <option value="">Seleccione una materia:</option>
+                    @foreach($materias as $materia)
+                        <option value="{{ $materia->id }}" data-cursos="{{ $materia->cursos->pluck('nombre')->join(', ') }}">{{ $materia->nombre }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="curso">Curso:</label>
+                <input type="text" id="curso" class="form-control" readonly>
+            </div>
+
             <button type="submit" class="btn-submit">Guardar Cambios</button>
             <a href="{{ route('docentes.index') }}" class="btn-back">Cancelar</a>
         </form>
     </div>
+    <script>
+        function updateCurso() {
+            var select = document.getElementById('materia_id');
+            var cursoInput = document.getElementById('curso');
+            var selectedOption = select.options[select.selectedIndex];
+            cursoInput.value = selectedOption.getAttribute('data-cursos');
+        }
+    </script>
 </body>
 </html>
