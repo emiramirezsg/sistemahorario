@@ -130,14 +130,13 @@
                     <p><strong>Categoría:</strong> {{ $docente->categoria ? $docente->categoria->nombre : 'Categoría no asignada' }}</p>
                     <p><strong>Materia: </strong>
                         @if($docente->materias->isEmpty())
-                            No tiene materias asignadas
+                            <span class="text-danger">Materia no asignadA</span>
                         @else
                                 @foreach($docente->materias as $materia)
                                     {{ $materia->nombre }}
                                 @endforeach
                         @endif
                     </p>
-                    
                 </div>
                 <div class="botones">
                     <a href="{{ route('docentes.edit', $docente->id) }}" class="btn btn-editar">Editar</a>

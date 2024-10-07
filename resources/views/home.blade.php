@@ -177,7 +177,7 @@
         <div class="user-info">
             <h2 onclick="location.href='{{ route('user.profile') }}'">{{ Auth::user()->name }}</h2>
         </div>
-        <div class="cetner-image">
+        <div class="center-image">
             <img src="https://prendimientocordoba.com/wp-content/uploads/2020/08/CabeceradDonBosco.jpg" alt="Central Image">
         </div>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
