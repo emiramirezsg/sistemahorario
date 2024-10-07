@@ -27,16 +27,6 @@ class CreateUsersTable extends Migration
             $table->timestamps();
         });
 
-        DB::table('users')->insert([
-            'name' => 'John Doe',
-            'email' => 'johndoe@example.com',
-            'password' => Hash::make('password'), // Cambia 'password' por la contraseña que prefieras
-            'role' => 'user',
-            'is_docente' => false,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
         // Crear 17 usuarios con rol 'docente'
         $docentes = [
             ['name' => 'Alice.Smith', 'email' => 'alicesmith@example.com'],
@@ -108,104 +98,26 @@ class CreateUsersTable extends Migration
             ['nombre' => 'quinta', 'hrs_trabajo' => '100'],
         ]);
 
-        Schema::create('materias', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombre');
-            $table->integer('horas_semana')->default(0);
-            $table->timestamps();
-        });
         
 
-        DB::table('materias')->insert([
-            ['nombre' => 'Ciencias Sociales'],
-            ['nombre' => 'Biologia Geografia'],
-            ['nombre' => 'Matematicas'],
-            ['nombre' => 'Lengua Castellana y Originaria'],
-            ['nombre' => 'Educacion Musical'],
-            ['nombre' => 'Educacion fisica'],
-            ['nombre' => 'Fisica'],
-            ['nombre' => 'Quimica'],
-            ['nombre' => 'Cosmos Visiones, Filosofia y Psicologia'],
-            ['nombre' => 'Tecnica tecnologica general'],
-            ['nombre' => 'Tecnica tecnologica especializada'],
-            ['nombre' => 'Artes Plasticas y Visuales'],
-            ['nombre' => 'Valores Espirituales y Religiones'],
-            ['nombre' => 'Lengua Extranjera'],
-
-        ]);
-    
         Schema::create('docentes', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
             $table->string('apellido');
             $table->string('email');
-            $table->foreignId('categoria_id')->constrained('categorias');
+            $table->foreignId('categoria_id')->constrained('categorias')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('materia_id')->constrained('materias')->onDelete('cascade');
+            $table->timestamps();
+        });
+        Schema::create('materias', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre');
+            $table->integer('horas_semana')->default(0);
+            $table->foreignId('docente_id')->nullable()->constrained('docentes')->onDelete('cascade');
             $table->timestamps();
         });
 
-        $categoriaId = DB::table('categorias')->where('nombre', 'merito')->value('id');
-
-        // ID de las materias
-        $materias = [
-            'Lengua Castellana y Originaria' => DB::table('materias')->where('nombre', 'Lengua Castellana y Originaria')->value('id'),
-            'Ciencias Sociales' => DB::table('materias')->where('nombre', 'Ciencias Sociales')->value('id'),
-            'Matemáticas' => DB::table('materias')->where('nombre', 'Matematicas')->value('id'),
-            'Biologia Geografia' => DB::table('materias')->where('nombre', 'Biologia Geografia')->value('id'),
-            'Educacion Musical' => DB::table('materias')->where('nombre', 'Educacion Musical')->value('id'),
-            'Educacion fisica' => DB::table('materias')->where('nombre', 'Educacion fisica')->value('id'),
-            'Fisica' => DB::table('materias')->where('nombre', 'Fisica')->value('id'),
-            'Quimica' => DB::table('materias')->where('nombre', 'Quimica')->value('id'),
-            'Cosmos Visiones, Filosofia y Psicologia' => DB::table('materias')->where('nombre', 'Cosmos Visiones, Filosofia y Psicologia')->value('id'),
-            'Tecnica tecnologica general' => DB::table('materias')->where('nombre', 'Tecnica tecnologica general')->value('id'),
-            'Tecnica tecnologica especializada' => DB::table('materias')->where('nombre', 'Tecnica tecnologica especializada')->value('id'),
-            'Artes Plasticas y Visuales' => DB::table('materias')->where('nombre', 'Artes Plasticas y Visuales')->value('id'),
-            'Valores Espirituales y Religiones' => DB::table('materias')->where('nombre', 'Valores Espirituales y Religiones')->value('id'),
-            'Lengua Extranjera' => DB::table('materias')->where('nombre', 'Lengua Extranjera')->value('id'),
-        ];
-
-        // Lista de usuarios docentes (ID de usuarios)
-        $docenteUserIds = [
-            2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
-        ];
-
-        // Asignar 2 docentes a las primeras 3 materias
-        $asignaciones = [
-            ['materia_id' => $materias['Lengua Castellana y Originaria'], 'docentes' => [0, 1]],
-            ['materia_id' => $materias['Ciencias Sociales'], 'docentes' => [2, 3]],
-            ['materia_id' => $materias['Matemáticas'], 'docentes' => [4, 5]],
-        ];
-
-        // Asignar 1 docente a las demás materias
-        $indexOffset = 6;
-        foreach (array_slice(array_values($materias), 3) as $index => $materia_id) {
-            $asignaciones[] = ['materia_id' => $materia_id, 'docentes' => [$index + $indexOffset]];
-        }
-
-        // Insertar los registros de docentes
-        $nombres = [
-            'Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank', 'Grace', 'Hannah', 'Ian', 'Jane', 'Kyle', 'Laura', 'Mike', 'Nina', 'Oscar', 'Paul', 'Quinn'
-        ];
-
-        $apellidos = [
-            'Smith', 'Johnson', 'Brown', 'Wilson', 'Davis', 'Miller', 'Lee', 'Walker', 'Hall', 'Allen', 'Young', 'King', 'Scott', 'Wright', 'Harris', 'Green', 'Turner'
-        ];
-
-        foreach ($asignaciones as $asignacion) {
-            foreach ($asignacion['docentes'] as $index) {
-                DB::table('docentes')->insert([
-                    'nombre' => $nombres[$index],
-                    'apellido' => $apellidos[$index],
-                    'email' => strtolower($nombres[$index]) . strtolower($apellidos[$index]) . '@example.com',
-                    'categoria_id' => $categoriaId,
-                    'user_id' => $docenteUserIds[$index],
-                    'materia_id' => $asignacion['materia_id'],
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-        }
+        
 
         Schema::create('cursos', function (Blueprint $table) {
             $table->id();

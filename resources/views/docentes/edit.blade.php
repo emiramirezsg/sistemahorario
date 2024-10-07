@@ -113,14 +113,6 @@
                     @endforeach
                 </select>
             </div>
-            <div class="form-group">
-                <label for="materia_id">Materia</label>
-                <select id="materia_id" name="materia_id" required>
-                    @foreach($materias as $materia)
-                    <option value="{{ $materia->id }}" {{ $docente->materia_id == $materia->id ? 'selected' : '' }}>{{ $materia->nombre }}</option>
-                    @endforeach
-                </select>
-            </div>
             <button type="submit" class="btn-submit">Guardar Cambios</button>
             <a href="{{ route('docentes.index') }}" class="btn-back">Cancelar</a>
         </form>

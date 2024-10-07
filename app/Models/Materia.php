@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Materia extends Model
 {
-    protected $fillable = ['nombre', 'horas_semana'];
+    protected $fillable = ['nombre', 'horas_semana', 'docente_id'];
 
     public function cursos()
     {
@@ -14,6 +14,6 @@ class Materia extends Model
 
     public function docentes()
     {
-        return $this->belongsToMany(Docente::class, 'docente_materia');
+        return $this->belongsTo(Docente::class);
     }
 }

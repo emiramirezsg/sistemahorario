@@ -116,14 +116,8 @@
                 </select>
             </div>
             <!-- Nuevo campo para seleccionar la materia -->
-            <div class="form-group">
-                <label for="materia_id">Materia</label>
-                <select id="materia_id" name="materia_id" >
-                    @foreach($materias as $materia)
-                    <option value="{{ $materia->id }}">{{ $materia->nombre }}</option>
-                    @endforeach
-                </select>
-            </div>
+            
+
             <button type="submit" class="btn-submit">Guardar</button>
             <a href="{{ route('docentes.index') }}" class="btn-back">Cancelar</a>
         </form>

@@ -127,7 +127,6 @@
                 <div class="categoria-info">
                     <h3>{{ $categoria->nombre }}</h3>
                     <p><strong>Horas de Trabajo:</strong> {{ $categoria->hrs_trabajo }} horas</p>
-                    <p><strong>Días Libres:</strong> {{ $categoria->dias_libres }}</p>
                 </div>
                 <div class="botones">
                     <a href="{{ route('categorias.edit', $categoria->id) }}" class="btn btn-editar">Editar</a>

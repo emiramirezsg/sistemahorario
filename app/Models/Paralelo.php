@@ -11,8 +11,4 @@ class Paralelo extends Model
     {
         return $this->belongsTo(Curso::class);
     }
-    public function docentes()
-    {
-        return $this->belongsToMany(Docente::class, 'docente_paralelo');
-    }
 }

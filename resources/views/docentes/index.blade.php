@@ -128,6 +128,8 @@
                     <h3>{{ $docente->nombre }} {{ $docente->apellido }}</h3>
                     <p><strong>Email:</strong> {{ $docente->email }}</p>
                     <p><strong>Categoría:</strong> {{ $docente->categoria->nombre }}</p>
+                    <p><strong>Materia:</strong> {{ $docente->materia->nombre }}</p>
+                    <p><strong>Dia libre:</strong></p>
                 </div>
                 <div class="botones">
                     <a href="{{ route('docentes.edit', $docente->id) }}" class="btn btn-editar">Editar</a>

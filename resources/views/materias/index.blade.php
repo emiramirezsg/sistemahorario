@@ -121,55 +121,80 @@
     <div class="container">
         <h2>Lista de Materias</h2>
         <div class="materias">
-            @foreach($materias as $materia)
-            <div class="materia-card">
-                <div class="materia-info">
-                    <h3>{{ $materia->nombre }}</h3>
-                    <p><strong>Horas a la semana:</strong> 
-                        @if(isset($materia->horas_semana))
-                            {{ $materia->horas_semana }} horas
-                        @else
-                            <span class="text-danger">Error: Horas no asignadas</span>
-                        @endif
-                    </p>
-                </div>
-                <div class="botones">
-                    <button class="btn btn-editar" data-bs-toggle="modal" data-bs-target="#editModal-{{ $materia->id }}">Editar</button>
-                    <form action="{{ route('materias.destroy', $materia->id) }}" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-eliminar" onclick="return confirm('¿Estás seguro de querer eliminar esta materia?')">Eliminar</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Modal para Editar Materia -->
-            <div class="modal fade" id="editModal-{{ $materia->id }}" tabindex="-1" aria-labelledby="editModalLabel-{{ $materia->id }}" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editModalLabel-{{ $materia->id }}">Editar Materia</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            @if($materias->isEmpty())
+                <p>No hay materias disponibles.</p>
+            @else
+                @foreach($materias as $materia)
+                    <div class="materia-card">
+                        <div class="materia-info">
+                            <h3>{{ $materia->nombre }}</h3>
+                            <p><strong>Horas a la semana:</strong> 
+                                @if(isset($materia->horas_semana))
+                                    {{ $materia->horas_semana }} horas
+                                @else
+                                    <span class="text-danger">Horas no asignadas</span>
+                                @endif
+                            </p>
+                            <p><strong>Curso asignado: </strong>
+                                @if($materia->cursos->isEmpty())
+                                    <span class="text-danger">Curso no asignado</span>
+                                @else
+                                    <ul>
+                                        @foreach($materia->cursos as $curso)
+                                            <li>{{ $curso->nombre }}</li> 
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </p>
                         </div>
-                        <div class="modal-body">
-                            <form action="{{ route('materias.update', $materia->id) }}" method="POST">
+                        <div class="botones">
+                            <button class="btn btn-editar" data-bs-toggle="modal" data-bs-target="#editModal-{{ $materia->id }}">Editar</button>
+                            <form action="{{ route('materias.destroy', $materia->id) }}" method="POST" style="display: inline;">
                                 @csrf
-                                @method('PUT')
-                                <div class="form-group">
-                                    <label for="nombre-{{ $materia->id }}">Nombre</label>
-                                    <input type="text" id="nombre-{{ $materia->id }}" name="nombre" value="{{ $materia->nombre }}" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="horas_semana">Horas por Semana:</label>
-                                    <input type="number" name="horas_semana" id="horas_semana" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-eliminar" onclick="return confirm('¿Estás seguro de querer eliminar esta materia?')">Eliminar</button>
                             </form>
                         </div>
                     </div>
-                </div>
-            </div>
-            @endforeach
+
+                    <!-- Modal para Editar Materia -->
+                    <div class="modal fade" id="editModal-{{ $materia->id }}" tabindex="-1" aria-labelledby="editModalLabel-{{ $materia->id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel-{{ $materia->id }}">Editar Materia</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ route('materias.update', $materia->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="form-group">
+                                            <label for="nombre-{{ $materia->id }}">Nombre</label>
+                                            <input type="text" id="nombre-{{ $materia->id }}" name="nombre" value="{{ $materia->nombre }}" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="horas_semana">Horas por Semana:</label>
+                                            <input type="number" name="horas_semana" id="horas_semana" value="{{ $materia->horas_semana }}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="curso_id">Seleccionar Curso</label>
+                                            <select id="curso_id" name="curso_id" class="form-control" required>
+                                                <option value="">Seleccione un curso</option>
+                                                @foreach($cursos as $curso)
+                                                    <option value="{{ $curso->id }}">{{ $curso->nombre }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
+                                        <a href="{{ route('materias.index') }}" class="btn btn-secondary mt-3">Cancelar</a>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
         </div>
 
         <button class="btn btn-agregar-materia mt-4" data-bs-toggle="modal" data-bs-target="#createModal">Agregar Materia</button>
@@ -192,6 +217,15 @@
                             <div class="form-group">
                                 <label for="horas_semana">Horas a la Semana</label>
                                 <input type="number" id="horas_semana" name="horas_semana" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="curso_id">Seleccionar Curso</label>
+                                <select id="curso_id" name="curso_id" class="form-control" required>
+                                    <option value="">Seleccione un curso</option>
+                                    @foreach($cursos as $curso)
+                                        <option value="{{ $curso->id }}">{{ $curso->nombre }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <button type="submit" class="btn btn-primary mt-3">Crear Materia</button>
                             <a href="{{ route('materias.index') }}" class="btn btn-secondary mt-3">Cancelar</a>

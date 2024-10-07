@@ -95,10 +95,6 @@
                 <label for="hrs_trabajo">Horas de Trabajo</label>
                 <input type="numeric" id="hrs_trabajo" name="hrs_trabajo" value="{{ $categoria->hrs_trabajo }}" required>
             </div>
-            <div class="form-group">
-                <label for="dias_libres">Días Libres</label>
-                <input type="text" id="dias_libres" name="dias_libres" value="{{ $categoria->dias_libres }}" required>
-            </div>
             <button type="submit" class="btn-submit">Guardar Cambios</button>
             <a href="{{ route('categorias.index') }}" class="btn-cancel">Cancelar</a>
         </form>

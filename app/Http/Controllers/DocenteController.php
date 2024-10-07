@@ -15,7 +15,8 @@ class DocenteController extends Controller
     public function index()
     {
         $docentes = Docente::with('categoria')->get();
-        return view('docentes.index', compact('docentes'));
+        $docentes = Docente::with('materias')->get();
+        return view('docentes.index', compact('docentes', 'materias'));
     }
 
     public function create()
@@ -53,8 +54,7 @@ class DocenteController extends Controller
             'apellido' => $validated['apellido'],
             'email' => $validated['email'],
             'categoria_id' => $validated['categoria_id'],
-            'user_id' => $user->id, // Asocia el docente con el usuario
-            'materia_id' => $request['materia_id'],
+            'user_id' => $user->id, 
         ]);
 
         return redirect()->route('docentes.index')->with('success', 'Docente creado con éxito.');
@@ -62,7 +62,7 @@ class DocenteController extends Controller
 
     public function show(Docente $docente)
     {
-        $docente = Docente::with('materias')->find($id); // Usa `with` para evitar consultas adicionales
+        $docente = Docente::with('materias')->find($id);
         if (!$docente) {
             abort(404, 'Docente no encontrado');
         }

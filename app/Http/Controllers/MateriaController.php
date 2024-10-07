@@ -10,30 +10,36 @@ class MateriaController extends Controller
 {
     public function index()
     {
-        $materias = Materia::all(); 
-        return view('materias.index', compact('materias'));
+        $materias = Materia::with('cursos')->get();
+        $cursos = Curso::all();
+        //dd($materias);
+        return view('materias.index', compact('materias', 'cursos'));
     }
 
     public function create()
     {
-        return view('materias.create');
+        $cursos = Curso::all();
+        return view('materias.create', compact('cursos'));
     }
 
     public function store(Request $request)
     {
-        //dd($request->all());
+        // Validar los datos entrantes
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'horas_semana' => 'required|integer|min:1', // Asegúrate de que se proporcione y sea mayor que 0
+            'horas_semana' => 'required|integer|min:1',
+            'curso_id' => 'required|exists:cursos,id',
         ]);
-        
-        Materia::create([
+        //dd($request->all());
+        $materia = Materia::create([
             'nombre' => $request->nombre,
-            'horas_semana' => $request->horas_semana, // Incluye esto
+            'horas_semana' => $request->horas_semana,
         ]);
 
+        $materia->cursos()->attach($request->curso_id);
         return redirect()->route('materias.index')->with('success', 'Materia creada con éxito.');
     }
+
 
     public function show(Materia $materia)
     {
@@ -48,16 +54,25 @@ class MateriaController extends Controller
         return view('materias.edit', compact('materia'));
     }
 
-    public function update(Request $request, Materia $materia)
+    public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'nombre' => 'required',
-            'horas_semana' => 'required',
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'horas_semana' => 'required|integer|min:1',
+            'curso_id' => 'required|exists:cursos,id',
         ]);
 
-        $materia->update($validated);
+        // Buscar la materia por ID
+        $materia = Materia::findOrFail($id);
+        
+        // Actualizar los detalles de la materia
+        $materia->nombre = $request->nombre;
+        $materia->horas_semana = $request->horas_semana;
+        $materia->save();
+        
+        $materia->cursos()->sync([$request->curso_id]); 
 
-        return redirect()->route('materias.index')->with('success', 'Materia actualizada exitosamente.');
+        return redirect()->route('materias.index')->with('success', 'Materia actualizada con éxito.');
     }
 
     public function destroy(Materia $materia)
